@@ -1,2 +1,2 @@
 # ExtPlaylist
-External Youtube playlists.
+External Youtube playlists built with React Native + Redux.
