@@ -114,9 +114,9 @@ const _addToPlaylistSuccessful= (playlistName, videoId) => ({type: PLAYLIST_ADD_
 const _addToPlaylistFailed = (message) => ({type: PLAYLIST_ADD_FAILED, message})
 
 export const listPlaylistUnload = () => ({type: LIST_PLAYLIST_UNLOAD})
-export const listPlaylist = (videoId = null) => {
+export const listPlaylist = (videoId = null, withoutNavigator = false) => {
 	return (dispatch) => {
-		dispatch(_listPlaylistStarted(videoId))
+		dispatch(_listPlaylistStarted(videoId, withoutNavigator))
 
 		const url = 'http://localhost:8080/api/v1/buckets?full=1'
 		return fetch(url)
@@ -134,6 +134,6 @@ export const listPlaylist = (videoId = null) => {
 			})
 	}
 }
-const _listPlaylistStarted = (videoId) => ({type: LIST_PLAYLIST_STARTED, videoId})
+const _listPlaylistStarted = (videoId, withoutNavigator) => ({type: LIST_PLAYLIST_STARTED, videoId, withoutNavigator})
 const _listPlaylistItems = (data) => ({type: LIST_PLAYLIST_ITEMS, data})
 const _listPlaylistFailed = (message) => ({type: LIST_PLAYLIST_FAILED, message})

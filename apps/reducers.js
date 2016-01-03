@@ -121,6 +121,7 @@ const search = (state = initialSearchState, action) => {
 
 const initialPlaylistState = {
 	isViewingListPlaylist: false,
+	isViewingListPlaylistWithoutNavigator: false,
 	isViewingListPlaylistStarted: false,
 	videoIdForPlaylist: null,  // video to be added
 	playlistForVideoId: null,  // destination playlist
@@ -140,6 +141,7 @@ const playlist = (state = initialPlaylistState, action) => {
 		case LIST_PLAYLIST_STARTED:
 			return Object.assign({}, state, {
 				isViewingListPlaylist: true,
+				isViewingListPlaylistWithoutNavigator: action.withoutNavigator,
 				isViewingListPlaylistStarted: true,
 				videoIdForPlaylist: action.videoId
 			})

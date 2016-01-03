@@ -74,7 +74,7 @@ class App extends React.Component {
 		const hasVideoDetails = routes.length === 2
 		const hasPlaylists = routes.length === 3
 
-	  if (nextProps.playlist.isViewingListPlaylist) {
+	  if (nextProps.playlist.isViewingListPlaylist && !nextProps.playlist.isViewingListPlaylistWithoutNavigator) {
 	  	if (hasPlaylists) return
 	  	this.refs.navigator.push({
 	  		id: 'playlists',
@@ -130,31 +130,52 @@ class App extends React.Component {
 	}
 
 	render() {
+		let cmp = null
+		if (this.props.search.isViewingResult) {
+			cmp = (
+				<Navigator
+					ref="navigator"
+					configureScene={(route) => Navigator.SceneConfigs.FloatFromLeft}
+					initialRoute={{
+						id: 'result',
+						title: `'${this.props.search.keyword}'`,
+						index: 0
+					}}
+					renderScene={this.renderScene.bind(this)}
+					navigationBar={
+	          <Navigator.NavigationBar
+	          	style={styles.navBar}
+	            routeMapper={NavigationBarRouteMapper} />
+	        }
+	        newSearch={this.props.newSearch} />
+			)
+		} else if (this.props.playlist.isViewingListPlaylist && this.props.playlist.isViewingListPlaylistWithoutNavigator) {
+			cmp = (
+				<View style={{
+					flex: 1,
+					paddingTop: 40
+				}}>
+					<Playlists
+						playlist={this.props.playlist}
+						listPlaylistUnload={this.props.listPlaylistUnload}
+						addToPlaylist={this.props.addToPlaylist} />
+				</View>
+			)
+		} else {
+			cmp = (
+				<Search
+					error={this.props.search.error}
+					keyword={this.props.search.keyword}
+					isSearching={this.props.search.isSearching}
+					setSearchKeyword={this.props.setSearchKeyword}
+					runSearch={this.props.runSearch}
+					listPlaylist={this.props.listPlaylist} />
+			)
+		}
+
 		return (
 			<View style={styles.container}>
-				{this.props.search.isViewingResult ?
-					<Navigator
-						ref="navigator"
-						configureScene={(route) => Navigator.SceneConfigs.FloatFromLeft}
-						initialRoute={{
-							id: 'result',
-							title: `'${this.props.search.keyword}'`,
-							index: 0
-						}}
-						renderScene={this.renderScene.bind(this)}
-						navigationBar={
-		          <Navigator.NavigationBar
-		          	style={styles.navBar}
-		            routeMapper={NavigationBarRouteMapper} />
-		        }
-		        newSearch={this.props.newSearch} /> : 
-					<Search
-						error={this.props.search.error}
-						keyword={this.props.search.keyword}
-						isSearching={this.props.search.isSearching}
-						setSearchKeyword={this.props.setSearchKeyword}
-						runSearch={this.props.runSearch} />
-				}
+				{cmp}
 			</View>
 		)
 	}

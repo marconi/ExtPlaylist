@@ -29,9 +29,13 @@ class Playlists extends React.Component {
 	}
 
 	handlePlaylistSelect(playlistName) {
-		if (this.props.playlist.isAddingToPlaylist) return
-		if (!this.props.playlist.videoIdForPlaylist) return
-		this.props.addToPlaylist(playlistName, this.props.playlist.videoIdForPlaylist)
+		if (this.props.playlist.isViewingListPlaylistWithoutNavigator) {
+			console.log('clicked...')
+		} else {
+			if (this.props.playlist.isAddingToPlaylist) return
+			if (!this.props.playlist.videoIdForPlaylist) return
+			this.props.addToPlaylist(playlistName, this.props.playlist.videoIdForPlaylist)
+		}
 	}
 
 	renderRow(rowData) {
