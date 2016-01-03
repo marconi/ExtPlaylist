@@ -47,10 +47,7 @@ class Search extends React.Component {
 				<Text style={styles.info}><Text style={{fontWeight: 'bold'}}>extPlaylist</Text> lets you search for youtube videos and create playlist outside of youtube in 3 easy steps:</Text>
 				<Text style={styles.step}>1. Search for videos</Text>
 				<Text style={styles.step}>2. Add to existing or new playlist</Text>
-				<TouchableOpacity
-					onPress={this.handleEnjoy.bind(this)}>
-					<Text style={[styles.step, styles.enjoyButtonText]}>3. Enjoy your playlist!</Text>
-				</TouchableOpacity>
+				<Text style={styles.step}>3. Enjoy your playlist!</Text>
 			</View>
 		)
 	}
@@ -93,10 +90,6 @@ var styles = StyleSheet.create({
 	},
 	step: {
 		marginBottom: 5
-	},
-	enjoyButtonText: {
-		color: '#4078C0',
-		fontWeight: 'bold'
 	},
 	preloader: {
 		marginBottom: 20

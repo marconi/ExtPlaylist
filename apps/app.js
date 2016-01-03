@@ -14,16 +14,9 @@ import {
 	runSearch,
 	moreVideos,
 	newSearch,
-	viewVideo,
-	viewVideoUnload,
-	listPlaylist,
-	listPlaylistUnload,
-	addToPlaylist
 } from './actions'
 import Search from './components/search'
 import SearchResult from './components/search_result'
-import VideoDetails from './components/video_details'
-import Playlists from './components/playlists'
 
 const NavigationBarRouteMapper = {
   LeftButton(route, navigator, index, navState) {
@@ -65,32 +58,6 @@ const NavigationBarRouteMapper = {
 }
 
 class App extends React.Component {
-	componentWillReceiveProps(nextProps) {
-		let routes = []
-		if (this.refs.navigator) {
-			routes = this.refs.navigator.getCurrentRoutes()
-		}
-
-		const hasVideoDetails = routes.length === 2
-		const hasPlaylists = routes.length === 3
-
-	  if (nextProps.playlist.isViewingListPlaylist && !nextProps.playlist.isViewingListPlaylistWithoutNavigator) {
-	  	if (hasPlaylists) return
-	  	this.refs.navigator.push({
-	  		id: 'playlists',
-	  		title: 'Playlists',
-	  		index: 2
-	  	})
-	  } else if (nextProps.search.viewedVideo) {
-	  	if (hasVideoDetails) return
-	  	this.refs.navigator.push({
-	  		id: 'videoDetails',
-	  		title: nextProps.search.viewedVideo.snippet.title.substring(0, 20) + '...',
-	  		index: 1
-	  	})
-	  }
-	}
-
 	renderScene(route, navigator) {
 		switch (route.id) {
 			case 'result':
@@ -106,76 +73,37 @@ class App extends React.Component {
 							viewedVideo={this.props.search.viewedVideo} />
 					</View>
 				)
-			case 'videoDetails':
-				return (
-					<View style={styles.scene}>
-						<VideoDetails
-							navigator={navigator}
-							viewVideoUnload={this.props.viewVideoUnload}
-							viewedVideo={this.props.search.viewedVideo}
-							listPlaylist={this.props.listPlaylist} />
-					</View>
-				)
-			case 'playlists':
-				return (
-					<View style={styles.scene}>
-						<Playlists
-							navigator={navigator}
-							playlist={this.props.playlist}
-							listPlaylistUnload={this.props.listPlaylistUnload}
-							addToPlaylist={this.props.addToPlaylist} />
-					</View>
-				)
 		}
 	}
 
 	render() {
-		let cmp = null
-		if (this.props.search.isViewingResult) {
-			cmp = (
-				<Navigator
-					ref="navigator"
-					configureScene={(route) => Navigator.SceneConfigs.FloatFromLeft}
-					initialRoute={{
-						id: 'result',
-						title: `'${this.props.search.keyword}'`,
-						index: 0
-					}}
-					renderScene={this.renderScene.bind(this)}
-					navigationBar={
-	          <Navigator.NavigationBar
-	          	style={styles.navBar}
-	            routeMapper={NavigationBarRouteMapper} />
-	        }
-	        newSearch={this.props.newSearch} />
-			)
-		} else if (this.props.playlist.isViewingListPlaylist && this.props.playlist.isViewingListPlaylistWithoutNavigator) {
-			cmp = (
-				<View style={{
-					flex: 1,
-					paddingTop: 40
-				}}>
-					<Playlists
-						playlist={this.props.playlist}
-						listPlaylistUnload={this.props.listPlaylistUnload}
-						addToPlaylist={this.props.addToPlaylist} />
-				</View>
-			)
-		} else {
-			cmp = (
-				<Search
-					error={this.props.search.error}
-					keyword={this.props.search.keyword}
-					isSearching={this.props.search.isSearching}
-					setSearchKeyword={this.props.setSearchKeyword}
-					runSearch={this.props.runSearch}
-					listPlaylist={this.props.listPlaylist} />
-			)
-		}
-
 		return (
 			<View style={styles.container}>
-				{cmp}
+				{this.props.search.isViewingResult ?
+					<Navigator
+						ref="navigator"
+						configureScene={(route) => Navigator.SceneConfigs.FloatFromLeft}
+						initialRoute={{
+							id: 'result',
+							title: `'${this.props.search.keyword}'`,
+							index: 0
+						}}
+						renderScene={this.renderScene.bind(this)}
+						navigationBar={
+		          <Navigator.NavigationBar
+		          	style={styles.navBar}
+		            routeMapper={NavigationBarRouteMapper} />
+		        }
+		        newSearch={this.props.newSearch} />
+		      :
+		      <Search
+						error={this.props.search.error}
+						keyword={this.props.search.keyword}
+						isSearching={this.props.search.isSearching}
+						setSearchKeyword={this.props.setSearchKeyword}
+						runSearch={this.props.runSearch}
+						listPlaylist={this.props.listPlaylist} />
+				}
 			</View>
 		)
 	}
@@ -183,8 +111,7 @@ class App extends React.Component {
 
 const stateToProps = (state) => {
   return {
-  	search: state.search,
-  	playlist: state.playlist
+  	search: state.search
  	}
 }
 
@@ -194,11 +121,6 @@ const dispatchToProps = (dispatch) => {
 	  runSearch,
 	  moreVideos,
 	  newSearch,
-	  viewVideo,
-	  viewVideoUnload,
-	  listPlaylist,
-	  listPlaylistUnload,
-	  addToPlaylist
 	}, dispatch)
 }
 
