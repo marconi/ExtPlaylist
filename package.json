@@ -6,7 +6,6 @@
     "start": "react-native start"
   },
   "dependencies": {
-    "react": "0.14.3",
     "react-native": "^0.17.0",
     "react-redux": "^3.1.2",
     "redux": "^3.0.5",
